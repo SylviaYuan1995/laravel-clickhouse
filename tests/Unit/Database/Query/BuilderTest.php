@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Esazykin\LaravelClickHouse\Tests\Unit\Database\Query;
+namespace Sylvia\LaravelClickHouse\Tests\Unit\Database\Query;
 
 use PHPUnit\Framework\TestCase;
-use Esazykin\LaravelClickHouse\Tests\Helpers;
+use Sylvia\LaravelClickHouse\Tests\Helpers;
 use Tinderbox\ClickhouseBuilder\Query\Grammar;
-use Esazykin\LaravelClickHouse\Database\Connection;
+use Sylvia\LaravelClickHouse\Database\Connection;
 use Tinderbox\ClickhouseBuilder\Query\Enums\Format;
-use Esazykin\LaravelClickHouse\Database\Query\Builder;
+use Sylvia\LaravelClickHouse\Database\Query\Builder;
 
 /**
  * @property \Mockery\MockInterface|Connection connection
