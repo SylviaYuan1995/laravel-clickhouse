@@ -134,6 +134,7 @@ class Builder
         if ($column instanceof Closure) {
             $this->query->where(function (QueryBuilder $queryBuilder) use ($column) {
                 $eloquentBuilder = $this->model->newEloquentBuilder($queryBuilder);
+                $eloquentBuilder->setModel($this->model);
                 $column($eloquentBuilder);
             });
         } else {
@@ -491,7 +492,7 @@ class Builder
 
         $perPage = $perPage ?: $this->model->getPerPage();
 
-        $results = ($total = $this->toBase()->getCountForPagination())
+        $results = ($total = $this->toBase()->count())
             ? $this->forPage($page, $perPage)->get($columns)
             : $this->model->newCollection();
 
@@ -826,7 +827,7 @@ class Builder
     /**
      * Get a base query builder instance.
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return QueryBuilder
      */
     public function toBase()
     {

@@ -20,7 +20,7 @@ trait HasAttributes
         return $this->casts;
     }
 
-    protected function getDateFormat(): string
+    public function getDateFormat(): string
     {
         return $this->dateFormat ?? 'Y-m-d H:i:s';
     }
