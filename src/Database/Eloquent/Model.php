@@ -20,11 +20,12 @@ use Illuminate\Database\Eloquent\Concerns\GuardsAttributes;
 use Illuminate\Database\Eloquent\Concerns\HasRelationships;
 use Illuminate\Database\ConnectionResolverInterface as Resolver;
 use Sylvia\LaravelClickHouse\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Model as BaseModel;
 
 /**
  * @mixin \Eloquent
  */
-abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable
+abstract class Model extends BaseModel implements ArrayAccess, Arrayable, Jsonable, JsonSerializable
 {
     use Concerns\HasAttributes,
         HasEvents,
@@ -112,7 +113,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Create a new Eloquent model instance.
      *
-     * @param  array $attributes
+     * @param array $attributes
      * @return void
      */
     public function __construct(array $attributes = [])
@@ -162,7 +163,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         $class = static::class;
 
         foreach (class_uses_recursive($class) as $trait) {
-            if (method_exists($class, $method = 'boot'.class_basename($trait))) {
+            if (method_exists($class, $method = 'boot' . class_basename($trait))) {
                 forward_static_call([$class, $method]);
             }
         }
@@ -181,7 +182,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Fill the model with an array of attributes.
      *
-     * @param  array $attributes
+     * @param array $attributes
      * @return $this
      *
      * @throws \Illuminate\Database\Eloquent\MassAssignmentException
@@ -209,7 +210,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Fill the model with an array of attributes. Force mass assignment.
      *
-     * @param  array $attributes
+     * @param array $attributes
      * @return $this
      */
     public function forceFill(array $attributes)
@@ -222,7 +223,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Remove the table name from a given key.
      *
-     * @param  string $key
+     * @param string $key
      * @return string
      */
     protected function removeTableFromKey($key)
@@ -233,8 +234,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Create a new instance of the given model.
      *
-     * @param  array $attributes
-     * @param  bool $exists
+     * @param array $attributes
+     * @param bool $exists
      * @return static
      */
     public function newInstance($attributes = [], $exists = false)
@@ -242,7 +243,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // This method just provides a convenient way for us to generate fresh model
         // instances of this current model. It is particularly useful during the
         // hydration of new objects via the Eloquent query builder instances.
-        $model = new static((array) $attributes);
+        $model = new static((array)$attributes);
 
         $model->exists = $exists;
 
@@ -256,11 +257,11 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Create a new model instance that is existing.
      *
-     * @param  array $attributes
-     * @param  string|null $connection
+     * @param array $attributes
+     * @param string|null $connection
      * @return static
      */
-    public function newFromBuilder(array $attributes = [], string $connection = null)
+    public function newFromBuilder($attributes = [], $connection = null)
     {
         $model = $this->newInstance([], true);
 
@@ -273,20 +274,20 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         return $model;
     }
 
-    /**
-     * Get all of the models from the database.
-     *
-     * @return Collection|static[]
-     */
-    public static function all()
-    {
-        return (new static)->newQuery()->get();
-    }
+//    /**
+//     * Get all of the models from the database.
+//     *
+//     * @return Collection|static[]
+//     */
+//    public static function all($columns = ['*'])
+//    {
+//        return (new static)->newQuery()->get();
+//    }
 
     /**
      * Begin querying a model with eager loading.
      *
-     * @param  array|string $relations
+     * @param array|string $relations
      * @return Builder|static
      */
     public static function with($relations)
@@ -317,12 +318,12 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
             ->with($this->with);
     }
 
-    public function newQueryWithoutScope()
-    {
-        return $this->newQuery();
-    }
+//    public function newQueryWithoutScope()
+//    {
+//        return $this->newQuery();
+//    }
 
-    public function newEloquentBuilder(QueryBuilder $query): Builder
+    public function newEloquentBuilder($query): Builder
     {
         return new Builder($query);
     }
@@ -338,7 +339,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Create a new Eloquent Collection instance.
      *
-     * @param  array $models
+     * @param array $models
      * @return Collection
      */
     public function newCollection(array $models = []): Collection
@@ -359,7 +360,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Convert the model instance to JSON.
      *
-     * @param  int $options
+     * @param int $options
      * @return string
      *
      * @throws \Illuminate\Database\Eloquent\JsonEncodingException
@@ -408,10 +409,10 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Set the connection associated with the model.
      *
-     * @param  string $name
+     * @param string $name
      * @return $this
      */
-    public function setConnection(string $name)
+    public function setConnection($name)
     {
         $this->connection = $name;
 
@@ -421,10 +422,10 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Resolve a connection instance.
      *
-     * @param  string|null $connection
+     * @param string|null $connection
      * @return Connection|\Illuminate\Database\ConnectionInterface
      */
-    public static function resolveConnection(string $connection = null)
+    public static function resolveConnection($connection = null)
     {
         return static::$resolver->connection($connection);
     }
@@ -442,7 +443,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Set the connection resolver instance.
      *
-     * @param  \Illuminate\Database\ConnectionResolverInterface $resolver
+     * @param \Illuminate\Database\ConnectionResolverInterface $resolver
      * @return void
      */
     public static function setConnectionResolver(Resolver $resolver): void
@@ -469,10 +470,10 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Set the table associated with the model.
      *
-     * @param  string $table
+     * @param string $table
      * @return $this
      */
-    public function setTable(string $table): self
+    public function setTable($table): self
     {
         $this->table = $table;
 
@@ -492,10 +493,10 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Set the primary key for the model.
      *
-     * @param  string $key
+     * @param string $key
      * @return $this
      */
-    public function setKeyName(string $key): self
+    public function setKeyName($key): self
     {
         $this->primaryKey = $key;
 
@@ -509,7 +510,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function getQualifiedKeyName(): string
     {
-        return $this->getTable().'.'.$this->getKeyName();
+        return $this->getTable() . '.' . $this->getKeyName();
     }
 
     /**
@@ -525,10 +526,10 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Set the data type for the primary key.
      *
-     * @param  string $type
+     * @param string $type
      * @return $this
      */
-    public function setKeyType(string $type)
+    public function setKeyType($type)
     {
         $this->keyType = $type;
 
@@ -552,7 +553,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function getForeignKey(): string
     {
-        return Str::snake(class_basename($this)).'_'.$this->primaryKey;
+        return Str::snake(class_basename($this)) . '_' . $this->primaryKey;
     }
 
     /**
@@ -568,10 +569,10 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Set the number of models to return per page.
      *
-     * @param  int $perPage
+     * @param int $perPage
      * @return $this
      */
-    public function setPerPage(int $perPage): self
+    public function setPerPage($perPage): self
     {
         $this->perPage = $perPage;
 
@@ -581,7 +582,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Dynamically retrieve attributes on the model.
      *
-     * @param  string $key
+     * @param string $key
      * @return mixed
      */
     public function __get($key)
@@ -592,8 +593,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Dynamically set attributes on the model.
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param string $key
+     * @param mixed $value
      * @return void
      */
     public function __set($key, $value)
@@ -604,7 +605,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Determine if the given attribute exists.
      *
-     * @param  mixed $offset
+     * @param mixed $offset
      * @return bool
      */
     public function offsetExists($offset): bool
@@ -615,7 +616,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Get the value for a given offset.
      *
-     * @param  mixed $offset
+     * @param mixed $offset
      * @return mixed
      */
     public function offsetGet($offset)
@@ -626,8 +627,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Set the value for a given offset.
      *
-     * @param  mixed $offset
-     * @param  mixed $value
+     * @param mixed $offset
+     * @param mixed $value
      * @return void
      */
     public function offsetSet($offset, $value): void
@@ -638,7 +639,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Unset the value for a given offset.
      *
-     * @param  mixed $offset
+     * @param mixed $offset
      * @return void
      */
     public function offsetUnset($offset): void
@@ -649,7 +650,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Determine if an attribute or relation exists on the model.
      *
-     * @param  string $key
+     * @param string $key
      * @return bool
      */
     public function __isset($key)
@@ -660,7 +661,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Unset an attribute on the model.
      *
-     * @param  string $key
+     * @param string $key
      * @return void
      */
     public function __unset($key)
@@ -671,8 +672,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Handle dynamic method calls into the model.
      *
-     * @param  string $method
-     * @param  array $parameters
+     * @param string $method
+     * @param array $parameters
      * @return mixed
      */
     public function __call($method, $parameters)
@@ -683,8 +684,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Handle dynamic static method calls into the method.
      *
-     * @param  string $method
-     * @param  array $parameters
+     * @param string $method
+     * @param array $parameters
      * @return mixed
      */
     public static function __callStatic($method, $parameters)
